@@ -18,10 +18,10 @@ def amazon_affiliates_02_processing_job():
 
 
     # move to download location
-    download_path = "/Users/ben.pollock/Downloads"
-    processing_path = "/Users/ben.pollock/Documents/amazon_affiliate_daily_dl"
-    backup_path = "/Users/ben.pollock/Documents/amazon_affiliate_daily_dl/daily_backup"
-    pickup_path = "/Users/ben.pollock/Library/CloudStorage/OneDrive-Hearst/Apps/"
+    download_path = "/Downloads"
+    processing_path = "/amazon_affiliate_daily_dl"
+    backup_path = "/daily_backup"
+    pickup_path = "/OneDrive/Apps/"
     os.chdir(download_path)
 
     # Find most recent "report-data" ZIP file
@@ -49,23 +49,23 @@ def amazon_affiliates_02_processing_job():
 
     # Set each tab to its own df (different formats each tab)
     unzipped_file = glob.glob('*-XLSX.xlsx')
-    # sheet_name = ['Fee-Orders','Fee-Earnings' ,'Bounty'] --included for original loop attempt. couldn't get it to work.
+    # sheet_name = ['sheet1','sheet2' ,'sheet3'] --included for original loop attempt.
 
     # Open each tab and read it into a df. Done in a for-loop because of data type of unzipped_file. Can't do it directly.
     for file in unzipped_file:
-        df_fee_orders = pd.read_excel(file, sheet_name = 'Fee-Orders', engine = "openpyxl")
-        df_fee_earnings = pd.read_excel(file, sheet_name = 'Fee-Earnings', engine = "openpyxl")
-        df_bounty = pd.read_excel(file, sheet_name = 'Bounty', engine = "openpyxl")
+        df_sheet1 = pd.read_excel(file, sheet_name = 'sheet1', engine = "openpyxl")
+        df_sheet2 = pd.read_excel(file, sheet_name = 'sheet2', engine = "openpyxl")
+        df_sheet3 = pd.read_excel(file, sheet_name = 'sheet3', engine = "openpyxl")
 
     # remove first row, reset index
-    df_fee_orders = df_fee_orders.rename(columns=df_fee_orders.iloc[0]).drop(df_fee_orders.index[0]).reset_index(drop=True).rename(columns={'Date': 'Date2'})
-    df_fee_earnings = df_fee_earnings.rename(columns=df_fee_earnings.iloc[0]).drop(df_fee_earnings.index[0]).reset_index(drop=True)
-    df_bounty = df_bounty.rename(columns=df_bounty.iloc[0]).drop(df_bounty.index[0]).reset_index(drop=True)
+    df_sheet1 = df_sheet1.rename(columns=df_sheet1.iloc[0]).drop(df_sheet1.index[0]).reset_index(drop=True).rename(columns={'Date': 'Date2'})
+    df_sheet2 = df_sheet2.rename(columns=df_sheet2.iloc[0]).drop(df_sheet2.index[0]).reset_index(drop=True)
+    df_sheet3 = df_sheet3.rename(columns=df_sheet3.iloc[0]).drop(df_sheet3.index[0]).reset_index(drop=True)
     
     # Add the date field and update
-    df_fee_orders["Date"] = current_date
-    df_fee_earnings["Date"] = current_date
-    df_bounty["Date"] = current_date
+    df_sheet1["Date"] = current_date
+    df_sheet2["Date"] = current_date
+    df_sheet3["Date"] = current_date
 
     # Change to pickup path location, where the new file will be dropped
     os.chdir(pickup_path)
@@ -77,9 +77,9 @@ def amazon_affiliates_02_processing_job():
     
     # write files to excel, deposit in pickup path, where Power Automate/OneDrive will retrieve.
     with pd.ExcelWriter(excel_file_name) as writer:
-        df_bounty.to_excel(writer, sheet_name="Bounty", index=False)
-        df_fee_orders.to_excel(writer, sheet_name="Fee-Orders", index=False)
-        df_fee_earnings.to_excel(writer, sheet_name="Fee-Earnings", index=False)
+        df_sheet3.to_excel(writer, sheet_name="Bounty", index=False)
+        df_sheet1.to_excel(writer, sheet_name="Fee-Orders", index=False)
+        df_sheet2.to_excel(writer, sheet_name="Fee-Earnings", index=False)
     
     
     # In[14]:
