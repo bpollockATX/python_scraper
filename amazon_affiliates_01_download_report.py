@@ -15,9 +15,9 @@ def amazon_affiliates_01_download_report():
     import time
     
     # Set File path and creds
-    download_dir = r"/Users/ben.pollock/Documents/amazon_affiliate_daily_dl"
-    user = "ben.pollock@hearst.com"
-    password = "&7@Oh2Ndf^as^ONt"
+    download_dir = r"/.../amazon_affiliate_daily_dl"
+    user = "[]"
+    password = "[]"
 
     # Set driver options
     options = Options()
